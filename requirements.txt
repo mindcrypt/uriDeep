@@ -1,0 +1,3 @@
+python-whois
+tld
+idna
