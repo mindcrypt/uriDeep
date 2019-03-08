@@ -15,7 +15,7 @@ DESCRIPTION = ('UriDeep: Tool based on machine learning to create amazing fake d
 CONFUSABLES_FULL = "./data/deepDiccConfusables.txt"
 CONFUSABLES_LIGHT = "./data/confusables-table-light.txt"
 
-def banner(delay_time=0.2):
+def banner(delay_time=1):
     print("""
             _    ___
  /\ /\ _ __(_)  /   \___  ___ _ __
@@ -197,7 +197,7 @@ def to_punnycode(domain):
     try:
         return domain.encode("idna")
     except Exception as e:
-        print('Error: ', e)
+        pass
 
 def is_alive(domain):
     try:
@@ -248,30 +248,31 @@ def main():
             domain_list.extend(domains_s)
         if len(domain_list) > 0:
             print('Similars domains to {}: {}'.format(dom.domain,len(domain_list)))
-            punydomains = set(to_punnycode_array(domain_list))
-            for punydomain in punydomains:
-                s = {'domain':punydomain.decode("utf-8") }
-                if(args.check and is_alive(punydomain)):
+            for punnydomain in domain_list:
+                s = {'domain':punnydomain}
+                s["domain_punnycode"] = to_punnycode(punnydomain)
+                if(args.check and is_alive(punnydomain)):
                     s["active"] = True
                     if args.whois:
-                        print("Check Whois: {}".format(punydomain.decode("utf-8")))
-                        w = who_is(punydomain.decode("utf-8"))
+                        print("Check Whois: {}".format(punnydomain.decode("utf-8")))
+                        w = who_is(punnydomain.decode("utf-8"))
                         s["whois"] = w
                     if args.virustotal:
-                        print("Check Virus Total: {}".format(punydomain.decode("utf-8")))
+                        print("Check Virus Total: {}".format(punnydomain.decode("utf-8")))
                         vt = VirusTotalPublicApi(API_KEY)
-                        response = vt.get_url_report('https://{}'.format(punydomain.decode("utf-8")), scan='1')
+                        response = vt.get_url_report('https://{}'.format(punnydomain.decode("utf-8")), scan='1')
                         json_vt = (json.dumps(response, sort_keys=False, indent=4))
                         s["virustotal"] = json_vt
                 d_salida["result"].append(s)
-            print("{}".format(d_salida))
             if args.outputfile:
                 print("\n")
                 print("******************************************************")
                 print("Outputfile with the summary: {}".format(args.outputfile))
                 with open(args.outputfile, 'w') as outfile:
                     json.dump(d_salida, outfile,default=str)
-
+            else:
+                for j in d_salida["result"]:
+                    print(j)
 
 if __name__ == '__main__':
     main()
