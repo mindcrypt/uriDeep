@@ -53,7 +53,7 @@ def getArgs():
     parser.add_argument('-key', '--api-key', dest='api',
                         help='VirusTotal API Key')
 
-    parser.add_argument('-o', '--output', dest='output', help='Output file')
+    parser.add_argument('-o', '--output', dest='outputfile', help='Output file')
 
 
     args = parser.parse_args()
@@ -84,9 +84,9 @@ def testArgs(args,parser):
             print("Wrong input file.\n\n")
             print("--------------")
             sys.exit(-1)
-    if (args.output):
+    if (args.outputfile):
         try:
-            f = open(args.output, 'w')
+            f = open(args.outputfile, 'w')
             f.close()
         except Exception:
             print("--------------")
@@ -214,16 +214,12 @@ def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     args = getArgs()
     idomains = list()
-    write = False
     if args.domain:
         idomains.append(args.domain)
     else:
         lines = read_data(args.fileinput)
         for line in lines:
                 idomains.append(line.strip())
-    if args.output:
-        f = open(args.output, 'w')
-        write = True
     d_salida = {'result':[]}
     for domain in idomains:
         domain_list = []
@@ -269,12 +265,13 @@ def main():
                         s["virustotal"] = json_vt
                 d_salida["result"].append(s)
             print("{}".format(d_salida))
-            if args.output:
+            if args.outputfile:
                 print("\n")
                 print("******************************************************")
-                print("Outputfile with the summary: {}".format(args.output))
-                with open(args.output, 'w') as outfile:
+                print("Outputfile with the summary: {}".format(args.outputfile))
+                with open(args.outputfile, 'w') as outfile:
                     json.dump(d_salida, outfile,default=str)
+
 
 if __name__ == '__main__':
     main()
