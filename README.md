@@ -2,6 +2,9 @@
 Unicode encoding attacks with machine learning. Tool based on machine learning to create amazing fake domains using
 confusables. Some domains can deceive IDN policies (Chrome & Firefox).
 
+I created the best (big) dictionary of confusables using neural networks. It is used in the tool and it can be download from:
+https://github.com/mindcrypt/uriDeep/blob/master/data/deepDiccConfusables.txt
+
 <pre>
 _mindcrypt@kali:~/tool/uriDeep# python3 uriDeep.py
 
