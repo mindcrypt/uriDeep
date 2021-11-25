@@ -115,7 +115,7 @@ def read_domain(domain):
 
 def read_confusables(filename):
     lines, confusables = [], {}
-    with open(filename, 'r') as f:
+    with open(filename, 'r', encoding='utf-8') as f:
         lines = f.readlines()
     for line in lines:
         characters = list(line.replace('\n', ''))
